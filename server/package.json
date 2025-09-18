@@ -1,0 +1,17 @@
+{
+  "name": "employee-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "@supabase/supabase-js": "^2.53.0"
+  }
+}
