@@ -317,7 +317,7 @@ export default function Announcements() {
                 New Announcement
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[700px]">
+            <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Create New Announcement</DialogTitle>
               </DialogHeader>
@@ -338,7 +338,7 @@ export default function Announcements() {
                     value={newAnnouncement.content}
                     onChange={(e) => setNewAnnouncement(prev => ({ ...prev, content: e.target.value }))}
                     placeholder="Announcement content..."
-                    rows={6}
+                    rows={4}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -368,7 +368,7 @@ export default function Announcements() {
                 </div>
                 <div className="space-y-2">
                   <Label>Target Roles</Label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {['employee', 'hr', 'admin'].map((role) => (
                       <div key={role} className="flex items-center space-x-2">
                         <Checkbox
@@ -395,7 +395,7 @@ export default function Announcements() {
                 </div>
                 <div className="space-y-2">
                   <Label>Target Departments</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="max-h-32 overflow-y-auto space-y-2">
                     {departments.map((dept) => (
                       <div key={dept.id} className="flex items-center space-x-2">
                         <Checkbox
