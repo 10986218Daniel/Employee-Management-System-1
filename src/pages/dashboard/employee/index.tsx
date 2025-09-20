@@ -41,56 +41,14 @@ import {
   Info
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
-import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useState } from 'react';
 import { DynamicNotifications } from '@/components/dynamic-notifications';
 import { useNavigate } from 'react-router-dom';
 
 export default function EmployeeDashboard() {
   const { userProfile } = useAuth();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const [requestedSalary, setRequestedSalary] = useState('');
-  const [reason, setReason] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  // Store requests in localStorage for persistence
-  const [salaryRequests, setSalaryRequests] = useState(() => {
-    const saved = localStorage.getItem('salaryRequests');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem('salaryRequests', JSON.stringify(salaryRequests));
-  }, [salaryRequests]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setTimeout(() => {
-      const newRequest = {
-        id: Date.now().toString(),
-        employee_id: userProfile?.id,
-        amount: Number(requestedSalary),
-        description: reason,
-        status: 'pending',
-        type: 'salary',
-        title: 'Salary Change Request',
-        created_at: new Date().toISOString(),
-      };
-      setSalaryRequests((prev: any[]) => [newRequest, ...prev]);
-      setOpen(false);
-      setRequestedSalary('');
-      setReason('');
-      setSubmitting(false);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 2000);
-    }, 800);
-  };
+  
 
   const quickActions = [
     { title: 'Clock In/Out', icon: Clock, href: '/dashboard/employee/attendance', color: 'bg-blue-500', description: 'Track your work hours' },
@@ -203,57 +161,7 @@ export default function EmployeeDashboard() {
           <span className="font-semibold text-lg">Current Salary:</span>
           <span className="text-2xl text-green-700 font-bold">{userProfile?.salary ? `₵${userProfile.salary.toLocaleString()}` : 'Not set'}</span>
         </div>
-        {/* Salary Change Request Button & Modal */}
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button className="mt-4 shadow-lg bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold px-6 py-2 rounded-full hover:scale-105 transition-transform">
-              <Sparkles className="mr-2 h-5 w-5 animate-pulse" />
-              Request Salary Change
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md rounded-2xl shadow-2xl border-0 bg-gradient-to-br from-white via-fuchsia-50 to-purple-100 p-8">
-            <div className="flex flex-col items-center mb-4">
-              <Button
-                className="w-full mb-4 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold py-2 rounded-lg shadow hover:from-green-500 hover:to-blue-600 transition-colors"
-                onClick={handleSubmit}
-                disabled={submitting || !requestedSalary || !reason}
-                type="submit"
-              >
-                {submitting ? 'Submitting...' : 'Submit Request'}
-              </Button>
-              <DialogTitle className="text-2xl font-bold text-purple-700 mb-2">Salary Change Request</DialogTitle>
-              <p className="text-sm text-muted-foreground mb-2">Fill out the form below to request a salary change. Your request will appear instantly in your requests list.</p>
-            </div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block mb-1 font-semibold text-purple-700">Requested Salary</label>
-                <Input
-                  type="number"
-                  value={requestedSalary}
-                  onChange={e => setRequestedSalary(e.target.value)}
-                  placeholder="Enter new salary amount"
-                  className="rounded-lg border-2 border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-semibold text-purple-700">Reason</label>
-                <Textarea
-                  value={reason}
-                  onChange={e => setReason(e.target.value)}
-                  placeholder="Provide a reason for your request"
-                  className="rounded-lg border-2 border-purple-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
-                  required
-                />
-              </div>
-            </form>
-            {success && (
-              <div className="flex items-center justify-center mt-4 text-green-600 animate-bounce">
-                <CheckCircle className="h-6 w-6 mr-2" /> Request submitted!
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+        
       </motion.div>
 
       {/* Dynamic Admin Message */}

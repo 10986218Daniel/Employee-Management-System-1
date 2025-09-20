@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
@@ -18,6 +20,12 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+
+// Static frontend (serve dist)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.resolve(__dirname, '..', 'dist');
+app.use(express.static(distPath));
 
 // Health
 app.get('/health', (_req, res) => res.status(200).send('OK'));
@@ -42,6 +50,11 @@ app.post('/api/login', async (req, res) => {
   // e.g., check or create profile rows via service role
 
   return res.status(200).json({ ok: true, received: { email } });
+});
+
+// SPA fallback to index.html for non-API routes
+app.get(/^(?!\/api).*/, (_req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 // Start
